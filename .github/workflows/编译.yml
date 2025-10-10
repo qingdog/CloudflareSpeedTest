@@ -11,10 +11,12 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         include:
-          # Windows
+          # Windows - 主要架构
           - os: windows-latest
             goos: windows
             goarch: amd64
@@ -23,15 +25,10 @@ jobs:
           - os: windows-latest
             goos: windows
             goarch: 386
-            ext: .exe
-            archive: zip
-          - os: windows-latest
-            goos: windows
-            goarch: arm64
             ext: .exe
             archive: zip
             
-          # Linux
+          # Linux - 主要架构
           - os: ubuntu-latest
             goos: linux
             goarch: amd64
@@ -45,41 +42,6 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: arm64
-            ext: ""
-            archive: tar.gz
-          - os: ubuntu-latest
-            goos: linux
-            goarch: armv5
-            ext: ""
-            archive: tar.gz
-          - os: ubuntu-latest
-            goos: linux
-            goarch: armv6
-            ext: ""
-            archive: tar.gz
-          - os: ubuntu-latest
-            goos: linux
-            goarch: armv7
-            ext: ""
-            archive: tar.gz
-          - os: ubuntu-latest
-            goos: linux
-            goarch: mips
-            ext: ""
-            archive: tar.gz
-          - os: ubuntu-latest
-            goos: linux
-            goarch: mips64
-            ext: ""
-            archive: tar.gz
-          - os: ubuntu-latest
-            goos: linux
-            goarch: mipsle
-            ext: ""
-            archive: tar.gz
-          - os: ubuntu-latest
-            goos: linux
-            goarch: mips64le
             ext: ""
             archive: tar.gz
             
@@ -118,7 +80,7 @@ jobs:
         fi
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}
         path: CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.${{ matrix.archive }}
@@ -130,7 +92,7 @@ jobs:
     
     steps:
     - name: Download all artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         path: artifacts
 
@@ -140,17 +102,9 @@ jobs:
         files: |
           artifacts/*/CloudflareST_proxy_windows_amd64.zip
           artifacts/*/CloudflareST_proxy_windows_386.zip
-          artifacts/*/CloudflareST_proxy_windows_arm64.zip
           artifacts/*/CloudflareST_proxy_linux_amd64.tar.gz
           artifacts/*/CloudflareST_proxy_linux_386.tar.gz
           artifacts/*/CloudflareST_proxy_linux_arm64.tar.gz
-          artifacts/*/CloudflareST_proxy_linux_armv5.tar.gz
-          artifacts/*/CloudflareST_proxy_linux_armv6.tar.gz
-          artifacts/*/CloudflareST_proxy_linux_armv7.tar.gz
-          artifacts/*/CloudflareST_proxy_linux_mips.tar.gz
-          artifacts/*/CloudflareST_proxy_linux_mips64.tar.gz
-          artifacts/*/CloudflareST_proxy_linux_mipsle.tar.gz
-          artifacts/*/CloudflareST_proxy_linux_mips64le.tar.gz
           artifacts/*/CloudflareST_proxy_darwin_amd64.zip
           artifacts/*/CloudflareST_proxy_darwin_arm64.zip
         body: |
@@ -162,8 +116,8 @@ jobs:
           - ✅ 向后兼容传统IP段格式
           
           ### 支持的平台
-          - Windows (amd64, 386, arm64)
-          - Linux (amd64, 386, arm64, armv5, armv6, armv7, mips, mips64, mipsle, mips64le)
+          - Windows (amd64, 386)
+          - Linux (amd64, 386, arm64)
           - macOS (amd64, arm64)
           
           ### 使用方法
