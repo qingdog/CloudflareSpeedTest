@@ -1,0 +1,179 @@
+name: Build CloudflareSpeedTest Proxy
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # Windows
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            ext: .exe
+            archive: zip
+          - os: windows-latest
+            goos: windows
+            goarch: 386
+            ext: .exe
+            archive: zip
+          - os: windows-latest
+            goos: windows
+            goarch: arm64
+            ext: .exe
+            archive: zip
+            
+          # Linux
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: 386
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: arm64
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: armv5
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: armv6
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: armv7
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: mips
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: mips64
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: mipsle
+            ext: ""
+            archive: tar.gz
+          - os: ubuntu-latest
+            goos: linux
+            goarch: mips64le
+            ext: ""
+            archive: tar.gz
+            
+          # macOS
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            ext: ""
+            archive: zip
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            ext: ""
+            archive: zip
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Build
+      run: |
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags "-s -w" -o CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }} .
+        echo "Built CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}"
+
+    - name: Create archive
+      run: |
+        if [ "${{ matrix.archive }}" = "zip" ]; then
+          zip -r CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.zip CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}
+        else
+          tar -czf CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.tar.gz CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}
+        fi
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}
+        path: CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.${{ matrix.archive }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: artifacts
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          artifacts/*/CloudflareST_proxy_windows_amd64.zip
+          artifacts/*/CloudflareST_proxy_windows_386.zip
+          artifacts/*/CloudflareST_proxy_windows_arm64.zip
+          artifacts/*/CloudflareST_proxy_linux_amd64.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_386.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_arm64.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_armv5.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_armv6.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_armv7.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_mips.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_mips64.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_mipsle.tar.gz
+          artifacts/*/CloudflareST_proxy_linux_mips64le.tar.gz
+          artifacts/*/CloudflareST_proxy_darwin_amd64.zip
+          artifacts/*/CloudflareST_proxy_darwin_arm64.zip
+        body: |
+          ## CloudflareSpeedTest Proxy Version
+          
+          ### 新增功能
+          - ✅ 支持 `IP:端口` 格式的反代测速
+          - ✅ 自动端口映射和保留
+          - ✅ 向后兼容传统IP段格式
+          
+          ### 支持的平台
+          - Windows (amd64, 386, arm64)
+          - Linux (amd64, 386, arm64, armv5, armv6, armv7, mips, mips64, mipsle, mips64le)
+          - macOS (amd64, arm64)
+          
+          ### 使用方法
+          ```bash
+          # 创建IP:端口格式的测试文件
+          echo "1.1.1.1:443" > test.txt
+          echo "8.8.8.8:80" >> test.txt
+          
+          # 运行测速
+          ./CloudflareST_proxy_linux_amd64 -f test.txt -dn 10 -sl 1 -tl 1000
+          ```
+        draft: false
+        prerelease: false
