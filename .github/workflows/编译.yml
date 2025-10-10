@@ -78,8 +78,10 @@ jobs:
     - name: Build (Linux/macOS)
       if: matrix.goos != 'windows'
       run: |
+        echo "Building for ${{ matrix.goos }}/${{ matrix.goarch }}"
         GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags "-s -w" -o CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }} .
         echo "Built CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}"
+        ls -la CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}
 
     - name: Create archive (Windows)
       if: matrix.goos == 'windows'
@@ -87,10 +89,40 @@ jobs:
       run: |
         Compress-Archive -Path CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }} -DestinationPath CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.zip -Force
 
-    - name: Create archive (Linux/macOS)
-      if: matrix.goos != 'windows'
+    - name: Create archive (Linux)
+      if: matrix.goos == 'linux'
       run: |
         tar -czf CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.tar.gz CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}
+
+    - name: Create archive (macOS)
+      if: matrix.goos == 'darwin'
+      run: |
+        echo "Creating macOS archive for ${{ matrix.goos }}/${{ matrix.goarch }}"
+        echo "Current directory: $(pwd)"
+        echo "Files in current directory:"
+        ls -la
+        echo "Target file:"
+        ls -la CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}
+        
+        # 确保文件存在
+        if [ ! -f "CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}" ]; then
+          echo "ERROR: Target file not found!"
+          exit 1
+        fi
+        
+        # 创建压缩包
+        zip -r CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.zip CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.ext }}
+        
+        echo "Created archive:"
+        ls -la CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.zip
+        
+        # 验证压缩包
+        if [ -f "CloudflareST_proxy_${{ matrix.goos }}_${{ matrix.goarch }}.zip" ]; then
+          echo "✅ macOS archive created successfully"
+        else
+          echo "❌ Failed to create macOS archive"
+          exit 1
+        fi
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
