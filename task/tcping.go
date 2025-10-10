@@ -145,12 +145,19 @@ func (p *Ping) tcpingHandler(ip *net.IPAddr) {
 	if recv == 0 {
 		return
 	}
+	// 获取使用的端口
+	port := TCPPort
+	if mappedPort, exists := PortMapping[ip.String()]; exists {
+		port = mappedPort
+	}
+
 	data := &utils.PingData{
 		IP:       ip,
 		Sended:   PingTimes,
 		Received: recv,
 		Delay:    totalDlay / time.Duration(recv),
 		Colo:     colo,
+		Port:     port,
 	}
 	p.appendIPData(data)
 }
