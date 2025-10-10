@@ -19,6 +19,8 @@ var (
 	// IPFile is the filename of IP Rangs
 	IPFile = defaultInputFile
 	IPText string
+	// PortMapping stores IP to port mapping for proxy mode
+	PortMapping = make(map[string]int)
 )
 
 func InitRandSeed() {
@@ -178,6 +180,22 @@ func loadIPRanges() []*net.IPAddr {
 			if line == "" {                           // 跳过空行
 				continue
 			}
+
+			// 检查是否是 IP:端口 格式（反代模式）
+			if strings.Contains(line, ":") && !strings.Contains(line, "/") {
+				parts := strings.Split(line, ":")
+				if len(parts) == 2 {
+					ip := strings.TrimSpace(parts[0])
+					portStr := strings.TrimSpace(parts[1])
+					if port, err := strconv.Atoi(portStr); err == nil && port > 0 && port < 65536 {
+						// 存储端口映射
+						PortMapping[ip] = port
+						// 将IP作为单个IP处理
+						line = ip
+					}
+				}
+			}
+
 			ranges.parseCIDR(line) // 解析 IP 段，获得 IP、IP 范围、子网掩码
 			if isIPv4(line) {      // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
 				ranges.chooseIPv4()
