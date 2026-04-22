@@ -1,36 +1,36 @@
-## MyStyle目的是选取能用的IP，而并非测试出来速度最快的
+## MyStyleCommand：目的是选取能用的IP，而并非测试出来速度最快的
 ---
 * 在自己当地的网络环境下，无法访问CF大部分IP，按照延迟排序，会导致大部分延迟较低速度小于0.1MB/s的IP覆盖掉有正常速度的IP网段
-    * 故将IP网段进行单独测试，由于CF的IP网段巨大覆盖到日本新加坡美国等地，这里将IP延迟上限设为300ms
+    * 故将IP网段进行单独测试，由于CF的IP网段巨大覆盖到日本东京成田、新加坡、美国丹佛、美国圣何塞等地，这里将IP延迟上限设为300ms
 * 加速选项：延迟测速线程512，下载测速时间2s
 * 100Mb/s百兆以上网络环境的加速选项：
     * 下载速度下限10MB/s，下载测速数量3，显示结果数量3
 ```powershell
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 173.245.48.0/20
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 103.21.244.0/22
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 103.22.200.0/22
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 103.31.4.0/22
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 141.101.64.0/18
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 108.162.192.0/18
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 190.93.240.0/20
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 188.114.96.0/20
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 197.234.240.0/22
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 198.41.128.0/17
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 162.158.0.0/15
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 104.16.0.0/12
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.0.0/17
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.128.0/18
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.192.0/19
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.224.0/22
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.229.0/24
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.230.0/23
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.232.0/21
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.240.0/21
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.64.248.0/21
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.65.0.0/16
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.66.0.0/16
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 172.67.0.0/16
-./CloudflareST_proxy_windows_amd64.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -ip 131.0.72.0/22
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 173.245.48.0/20
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 103.21.244.0/22
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 103.22.200.0/22
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 103.31.4.0/22
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 141.101.64.0/18
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 108.162.192.0/18
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 190.93.240.0/20
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 188.114.96.0/20
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 197.234.240.0/22
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 198.41.128.0/17
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 162.158.0.0/15
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 104.16.0.0/12
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.0.0/17
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.128.0/18
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.192.0/19
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.224.0/22
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.229.0/24
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.230.0/23
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.232.0/21
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.240.0/21
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.248.0/21
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.65.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.66.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.67.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 131.0.72.0/22
 ```
 
 ```
