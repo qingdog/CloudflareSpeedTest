@@ -1,41 +1,65 @@
 ## MyStyleCommand：目的是选取能用的IP，而并非测试出来速度最快的
 ---
-* 在自己当地的网络环境下，无法访问CF大部分IP，按照延迟排序，会导致大部分延迟较低速度小于0.1MB/s的IP覆盖掉有正常速度的IP网段
-    * 故将IP网段进行单独测试，由于CF的IP网段巨大覆盖到日本东京成田、新加坡、美国丹佛、美国圣何塞等地，这里将IP延迟上限设为300ms
-* 加速选项：延迟测速线程512，下载测速时间2s
-* 100Mb/s百兆以上网络环境的加速选项：
-    * 下载速度下限10MB/s，下载测速数量3，显示结果数量3
+* 在自己当地的网络环境下，无法访问CF大部分IP，按照延迟排序，会导致大部分延迟较低速度小于0.1MB/s的IP覆盖掉有正常速度的IP网段，故将IP网段进行单独测试
+	* 由于CF的IP网段巨大覆盖到日本东京成田、新加坡、美国丹佛、美国圣何塞等地，这里将IP延迟上限设为300ms
+* 加速选项：延迟测速线程512
+	* 下载测速时间设为2s，TCP连接较慢的IP网速将会较慢达不到10M/s，可将其剔除掉
+    * 下载速度下限1MB/s，避免测速多个IP都不达标，然后对剩下几百个甚至几千个IP都进行测速
+	* 下载测速数量3，显示结果数量3，不输出到文件中
+
 ```powershell
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 173.245.48.0/20
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 103.21.244.0/22
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 103.22.200.0/22
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 103.31.4.0/22
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 141.101.64.0/18
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 108.162.192.0/18
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 190.93.240.0/20
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 188.114.96.0/20
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 197.234.240.0/22
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 198.41.128.0/17
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 162.158.0.0/15
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 104.16.0.0/12
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.0.0/17
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.128.0/18
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.192.0/19
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.224.0/22
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.229.0/24
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.230.0/23
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.232.0/21
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.240.0/21
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.248.0/21
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.65.0.0/16
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.66.0.0/16
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 172.67.0.0/16
-./cfst.exe -tl 300 -n 512 -sl 10 -dt 2 -dn 3 -p 3 -o " " -ip 131.0.72.0/22
+# 精选一次-电信宽带
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 173.245.48.0/20
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 108.162.192.0/18
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 198.41.128.0/17
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 162.158.0.0/15
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 104.18.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.0.0/17
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.128.0/18
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.229.0/24
+```
+```powershell
+# 较慢
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 103.21.244.0/22
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 141.101.64.0/18
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 190.93.240.0/20
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 190.93.240.0/20
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 188.114.96.0/20
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 6 -dn 3 -p 3 -o " " -ip 172.64.230.0/23
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 172.64.232.0/21
+./cfst.exe -tl 300 -n 512  -dt 2 -dn 3 -p 3 -o " " -ip 172.65.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 172.66.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 4 -dn 3 -p 3 -o " " -ip 172.67.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 104.16.0.0/12
 ```
 
 ```
-# 网速较差时：下载速度下限1MB/s
-./CloudflareST_proxy_windows_amd64.exe -sl 1 -ip 108.162.192.0/18
+# 全量
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 173.245.48.0/20
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 103.21.244.0/22
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 103.22.200.0/22
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 103.31.4.0/22
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 141.101.64.0/18
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 108.162.192.0/18
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 190.93.240.0/20
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 188.114.96.0/20
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 197.234.240.0/22
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 198.41.128.0/17
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 162.158.0.0/15
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 104.16.0.0/12
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.0.0/17
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.128.0/18
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.192.0/19
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.224.0/22
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.229.0/24
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.230.0/23
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.232.0/21
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.240.0/21
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.64.248.0/21
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.65.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.66.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 172.67.0.0/16
+./cfst.exe -tl 300 -n 512 -sl 1 -dt 2 -dn 3 -p 3 -o " " -ip 131.0.72.0/22
 ```
 ---
 
